@@ -147,19 +147,42 @@ flowchart TD
 
 ---
 
-## 5. 단계별 프로젝트 진행 로드맵 (Week 1 ~ Week 5)
+## 5. 스마트물류 자동화 창고 3D 디지털 트윈 (Digital Twin) 시스템
+
+![스마트물류 자동화 창고 디지털 트윈 종합 인포그래픽](images/digital_twin_warehouse.png)
+
+스마트팩토리에서 설비 예지보전(PdM)에 의해 긴급 발주 및 소요가 예측된 부품이 공정 라인에 실제로 공급되기까지의 물리적 병목을 해소하기 위해, **자동화 물류 창고(AS/RS), 랙 셀(Rack Bins), AGV 무인 운반차를 1:1로 가상화한 실시간 3D 디지털 트윈 관제 시스템**(`digital_twin_engine.py`)을 구축했습니다.
+
+### 📌 디지털 트윈 핵심 구현 기능
+1. **3차원 랙 셀(Rack-Bay-Level) 공간 매핑 및 재고 가시화**:
+   - `Rack-A (소모품/C급)`: 베어링, 필터, O링 등 고회전율 부품의 통로 인접 배치
+   - `Rack-B (핵심 구동계/A급 Vital)`: AC 서보모터, 유압펌프 등 중량물은 1단(하단), 다빈도 부품은 2단(Golden Zone) 배치
+   - `Rack-C (센서/전장/B급)`: 솔레노이드 밸브, PLC 모듈 등 정밀 전장품의 항온항습 구역 보관
+   - 3D 공간 상에서 현재고 $\le$ 안전재고($SS$)인 셀은 `🚨 적색(Urgent)`, 현재고 $\le$ 발주점($ROP$)인 셀은 `⚠️ 황색(Warning)`, 정상 셀은 `✅ 녹색(Normal)` 큐브로 실시간 렌더링
+2. **자율주행 무인운반차(AGV) 실시간 텔레메트리 & 긴급 피킹 자동 배차**:
+   - `AGV-01 (피킹 AGV)`: 설비 헬스 스코어 하락 시 `BIN-B-02-01`에서 `SP-102 AC 서보모터`를 선제 피킹 후 1라인 `EQ-103 유압프레스`로 자율 이송 (속도 1.4 m/s, 배터리 89%)
+   - `AGV-02 (입고 AGV)`: 정기 발주 입고 부품의 Rack-A 자동 적재 미션 수행 중
+   - `AGV-03 (충전/순찰 AGV)`: 무선 충전 도크 대기 및 주기적 RFID 스캔 순찰
+3. **골든존(Golden Zone) 공간 최적화 전략**:
+   - 작업자 인체공학 및 로봇 피킹 속도를 극대화하기 위해 출고 작업의 55%가 집중되는 2단(높이 1.8m~3.6m)을 골든존으로 지정하여 A/V급 핵심 부품 집중 배치
+4. **창고 IoT 환경 모니터링 텔레메트리 연동**:
+   - 실시간 항온항습 센서(20.8°C / 41.5% RH), 화재 안전 레벨(Safe), 전체 공간 점유율(68.4%, 20/36 Bins) 실시간 연동
+
+---
+
+## 6. 단계별 프로젝트 진행 로드맵 (Week 1 ~ Week 5)
 
 | 주차 | 단계명 | 핵심 구현 태스크 | 산출물 | 진행 상태 |
 | :--- | :--- | :--- | :--- | :---: |
 | **Week 1** | **문제 정의 & 데이터 설계** | • 설비 스페어파트 도메인 조사<br>• 4개 테이블 스키마 정의 및 합성 데이터 생성기 개발 | `generate_dataset.py`, CSV/DB | **완료 (Done)** |
 | **Week 2** | **수요 예측 모델링** | • 간헐적 시계열 특성 EDA (Zero 비율 분석)<br>• Croston, SBA 베이스라인 알고리즘 구현 | `forecast_engine.py` | **완료 (Done)** |
 | **Week 3** | **동적 ROP 재고 최적화** | • 동적 안전재고(SS) / 재주문점(ROP) 수식 구현<br>• 설비 고장확률 연계 민감도 분석 | `forecast_engine.py` | **완료 (Done)** |
-| **Week 4** | **웹 관제 대시보드 구축** | • Streamlit 5-Tab 인터랙티브 관제 UI 구현<br>• 1-클릭 발주 시뮬레이션 및 ROI 계산기 개발<br>• 아키텍처 & 비주얼 인포그래픽 뷰 통합 | `app.py` | **완료 (Done)** |
+| **Week 4** | **웹 관제 대시보드 구축** | • Streamlit 6-Tab 인터랙티브 관제 UI 구현<br>• 스마트물류 3D 디지털 트윈 공간 뷰 및 AGV 관제<br>• 1-클릭 발주 시뮬레이션 및 ROI 계산기 개발 | `app.py` | **완료 (Done)** |
 | **Week 5** | **성과 분석 및 최종 발표** | • 정량적 ROI 성과 요약 및 발표 슬라이드 완성<br>• GitHub 리포지토리 최종 정리 및 시연 준비 | `smart_factory_slides.html` | **완료 (Done)** |
 
 ---
 
-## 6. UI/UX 1-클릭 3대 테마 전환 시스템 (Theme System)
+## 7. UI/UX 1-클릭 3대 테마 전환 시스템 (Theme System)
 
 사용자 환경(공장 관제실의 고조도/저조도 환경 및 프레젠테이션 환경)에 맞추어 **버튼 하나로 라이트모드, 그레이모드, 다크모드를 순환 전환**할 수 있도록 전 플랫폼에 구현되었습니다:
 
@@ -175,16 +198,16 @@ flowchart TD
 
 ---
 
-## 7. 4인 팀 역할 분담
+## 8. 4인 팀 역할 분담
 
 - **팀원 A (PM / Data)**: 데이터 스키마 설계, 산업용 부품 시뮬레이션 데이터셋 생성 (`generate_dataset.py`), ABC-VED 분류 엔진 구현
 - **팀원 B (AI / ML)**: 간헐적 수요 예측 모델(Croston, SBA) 및 시계열 평가지표(WAPE, RMSE) 알고리즘 구현
 - **팀원 C (Backend / MLOps)**: 설비 고장 연계 동적 ROP/안전재고 최적화 로직 및 파이프라인 개발
-- **팀원 D (Frontend / Presentation)**: Streamlit 웹 대시보드 (`app.py`) 개발, 3-모드 테마 UI 구현 및 최종 프레젠테이션 총괄
+- **팀원 D (Frontend / Presentation)**: Streamlit 웹 대시보드 (`app.py`) 개발, 스마트물류 3D 디지털 트윈 구현 및 최종 발표 총괄
 
 ---
 
-## 8. 관련 문서 및 호스팅 바로가기
+## 9. 관련 문서 및 호스팅 바로가기
 
 - 🐙 **GitHub 리포지토리**: [https://github.com/fox9star/smartfactory](https://github.com/fox9star/smartfactory)
 - 🌐 **GitHub Pages 온라인 가이드**: [https://fox9star.github.io/smartfactory/](https://fox9star.github.io/smartfactory/)

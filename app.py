@@ -19,6 +19,14 @@ from forecast_engine import (
     evaluate_forecast,
     DATA_DIR
 )
+from digital_twin_engine import (
+    build_warehouse_digital_twin_data,
+    get_agv_fleet_status,
+    get_warehouse_telemetry,
+    create_3d_warehouse_plot,
+    create_rack_elevation_chart,
+    RACK_CONFIG
+)
 
 # 1. 페이지 기본 설정
 st.set_page_config(
@@ -135,9 +143,10 @@ with col4:
 
 st.markdown("---")
 
-# 5개 핵심 탭 구성
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+# 6대 핵심 탭 구성 (스마트물류 3D 디지털 트윈 포함)
+tab1, tab_dt, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 실시간 재고 & ABC-VED 뷰",
+    "🛰️ 스마트물류 3D 디지털 트윈",
     "📈 간헐적 수요 예측 분석",
     "🚨 예지보전 연계 스마트 발주",
     "💰 비용 절감 & ROI 시뮬레이터",
@@ -209,6 +218,84 @@ with tab1:
     ]
     
     st.dataframe(display_df, use_container_width=True, hide_index=True)
+
+
+# ==========================================
+# TAB DT: 스마트물류 3D 디지털 트윈
+# ==========================================
+with tab_dt:
+    st.subheader("🛰️ 스마트물류 자동화 창고 3D 디지털 트윈 (Digital Twin HUD)")
+    st.caption("3차원 창고 랙(Rack-Bay-Level) 좌표계 기반 실시간 재고 적재율 및 결품 위험 셀 3D 시각화, AGV 자율주행 관제")
+    
+    df_bins = build_warehouse_digital_twin_data(df_results)
+    df_agv = get_agv_fleet_status()
+    telemetry = get_warehouse_telemetry()
+    
+    # 1. 창고 환경 및 물류 센서 텔레메트리 KPI 카드
+    t1, t2, t3, t4 = st.columns(4)
+    with t1:
+        st.metric("🌡️ 창고 온·습도 센서", f"{telemetry['avg_temp']} °C", delta=f"{telemetry['avg_humidity']}% RH (항온항습)")
+    with t2:
+        st.metric("🏢 창고 공간 점유율", f"{telemetry['space_occupancy_pct']} %", delta=f"{telemetry['occupied_bins']}/{telemetry['total_bins']} Bins 보관 중")
+    with t3:
+        st.metric("🤖 자율주행 AGV 가동률", f"{telemetry['active_agv_count']}대 주행 중", delta="1대 충전 대기")
+    with t4:
+        st.metric("🚨 긴급 피킹 요청", "1 건 (SP-102)", delta="EQ-103 고장 위험 대응", delta_color="inverse")
+        
+    st.markdown("---")
+    
+    # 2. 3D 인터랙티브 디지털 트윈 공간 뷰
+    col_dt_main, col_dt_ctrl = st.columns([3, 1])
+    
+    with col_dt_main:
+        fig_3d = create_3d_warehouse_plot(df_bins, df_agv, theme_mode=st.session_state.theme_mode)
+        st.plotly_chart(fig_3d, use_container_width=True)
+        st.caption("💡 마우스 드래그로 360도 회전, 휠로 확대/축소 가능합니다. 랙 셀(큐브)에 마우스를 올리면 실시간 재고, 동적 안전재고(SS), RFID 및 온습도가 표시됩니다.")
+        
+    with col_dt_ctrl:
+        st.markdown("##### 🔍 디지털 트윈 셀(Bin) 정밀 검색")
+        search_part = st.selectbox("보관 부품 선택 (위치 하이라이트)", options=["(전체 보기)"] + list(df_results["part_name"].values))
+        
+        if search_part != "(전체 보기)":
+            target_bin = df_bins[df_bins["part_name"] == search_part]
+            if not target_bin.empty:
+                tb = target_bin.iloc[0]
+                st.success(f"**📍 위치**: {tb['rack_name']}<br>**셀 번호**: `{tb['bin_id']}`<br>**좌표**: Bay {tb['bay']}열, Level {tb['level']}단<br>**RFID**: `{tb['rfid_tag']}`", icon="📍")
+                st.write(f"• **현재고**: {tb['current_stock']}개 / 적재율: {tb['fill_rate']}%")
+                st.write(f"• **상태**: {tb['status']}")
+                st.write(f"• **온도/습도**: {tb['temp_c']}°C, {tb['humidity_pct']}%")
+        
+        st.markdown("---")
+        st.markdown("##### 🤖 AGV 자율주행 제어")
+        if "agv_dispatched" not in st.session_state:
+            st.session_state.agv_dispatched = False
+            
+        if st.button("🚀 긴급 부품 AGV 즉시 출고 지시", use_container_width=True, type="primary"):
+            st.session_state.agv_dispatched = True
+            
+        if st.session_state.agv_dispatched:
+            st.success("✅ **[AGV-01 배차 완료]**<br>BIN-B-02-01에서 `SP-102 AC 서보모터` 2ea 피킹 후 1라인 `EQ-103 유압프레스`로 자율 주행 중입니다! (예상 도착: 1분 40초)")
+
+    st.markdown("---")
+    
+    # 3. 하단 2분할: 랙 입면도(2D Matrix) & AGV 관제 테이블
+    col_bottom_left, col_bottom_right = st.columns([1, 1])
+    
+    with col_bottom_left:
+        selected_rack = st.selectbox("전면 입면도(Elevation View) 랙 선택", options=list(RACK_CONFIG.keys()), format_func=lambda r: RACK_CONFIG[r]["name"])
+        fig_elev = create_rack_elevation_chart(df_bins, selected_rack=selected_rack, theme_mode=st.session_state.theme_mode)
+        st.plotly_chart(fig_elev, use_container_width=True)
+        st.caption("1단: 중량물 및 핵심부품, 2단: 출고빈도 높은 Golden Zone, 3단: 경량 센서 및 전장품")
+        
+    with col_bottom_right:
+        st.markdown("##### 📋 AGV 무인 운반차 실시간 관제 현황")
+        agv_display = df_agv[["agv_id", "name", "status", "mission", "battery_pct", "speed_mps"]].copy()
+        agv_display.columns = ["AGV ID", "로봇명", "상태", "현재 수행 미션", "배터리", "속도 (m/s)"]
+        agv_display["배터리"] = agv_display["배터리"].apply(lambda b: f"{b}%")
+        agv_display["속도 (m/s)"] = agv_display["속도 (m/s)"].apply(lambda s: f"{s} m/s")
+        st.dataframe(agv_display, use_container_width=True, hide_index=True)
+        
+        st.info("💡 **스마트물류 디지털 트윈 효과**: 설비 건전도 하락 시 현장 작업자의 수동 요청 없이도, 디지털 트윈 기반 AS/RS 랙에서 대상 부품을 AGV가 사전 피킹하여 라인 다운타임 대기시간을 제로화합니다.")
 
 
 # ==========================================
@@ -440,6 +527,11 @@ with tab5:
         if os.path.exists(dash_path):
             st.image(dash_path, caption="ABC-VED 매트릭스, 간헐적 수요 예측(SBA), 설비 헬스 스케일링, 연간 ROI 분석", use_container_width=True)
         st.info("🔹 **주요 분석 성과**: Croston 대비 SBA 예측 오차(WAPE) 15%p 개선, 라인 다운타임 손실 70% 차단, 연간 순편익 1.48억 원 달성")
+
+    dt_img_path = os.path.join(os.path.dirname(__file__), "images", "digital_twin_warehouse.png")
+    if os.path.exists(dt_img_path):
+        st.markdown("##### 🛰️ 스마트물류 자동화 창고 디지털 트윈(Digital Twin) 종합 인포그래픽")
+        st.image(dt_img_path, caption="창고 랙-베이 셀별 재고 매핑, AGV 긴급 피킹 주행 경로, 골든존 수직 공간 최적화 및 온습도 IoT 텔레메트리", use_container_width=True)
 
 st.markdown("---")
 st.caption("© 2026 Innovation Academy Codyssey Smart Factory Project Team. Built with Streamlit, Plotly & LightGBM.")

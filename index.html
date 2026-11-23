@@ -616,37 +616,68 @@
 
     <!-- 4. 웹 관제 대시보드 구조 -->
     <section>
-      <h2><span class="icon">🖥️</span> 웹 관제 대시보드 5개 핵심 탭 구성 (app.py)</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
+      <h2><span class="icon">🖥️</span> 웹 관제 대시보드 6대 핵심 탭 구성 (app.py)</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
         <div class="card">
           <span class="pill pill-blue">TAB 1</span>
           <h4>실시간 재고 & ABC-VED 뷰</h4>
           <p>• 현재고 vs 안전재고 게이지<br>• ABC-VED 매트릭스 히트맵<br>• 결품 위험 부품 적색 하이라이트</p>
         </div>
+        <div class="card" style="border-top: 3px solid #06b6d4;">
+          <span class="pill" style="background:#06b6d4; color:#fff;">TAB 2 (NEW)</span>
+          <h4>3D 스마트물류 디지털 트윈</h4>
+          <p>• 랙 셀(Rack-Bay) 3D 공간 매핑<br>• AGV 자율주행 실시간 텔레메트리<br>• 긴급 피킹 자동 출고 시뮬레이션</p>
+        </div>
         <div class="card">
-          <span class="pill pill-green">TAB 2</span>
+          <span class="pill pill-green">TAB 3</span>
           <h4>간헐적 수요 예측 분석</h4>
           <p>• Croston vs SBA vs MA 비교<br>• 향후 12주차 예상 소요량 차트<br>• WAPE, RMSE 정밀도 평가</p>
         </div>
         <div class="card">
-          <span class="pill pill-red">TAB 3</span>
+          <span class="pill pill-red">TAB 4</span>
           <h4>예지보전 연계 발주 추천</h4>
           <p>• 설비 헬스 스코어 연동 알람<br>• 동적 ROP 도달 시 1-클릭 발주<br>• 조달 리드타임 역산 시뮬레이션</p>
         </div>
         <div class="card">
-          <span class="pill pill-yellow">TAB 4</span>
+          <span class="pill pill-yellow">TAB 5</span>
           <h4>비용 절감 & ROI 계산기</h4>
           <p>• 재고 유지비 절감액 시뮬레이션<br>• 다운타임 회피 경제효과 계산<br>• 정량적 비즈니스 임팩트 요약</p>
         </div>
         <div class="card">
-          <span class="pill pill-purple" style="background:#8b5cf6; color:#ffffff;">TAB 5</span>
+          <span class="pill pill-purple" style="background:#8b5cf6; color:#ffffff;">TAB 6</span>
           <h4>아키텍처 & 비주얼 리포트</h4>
           <p>• 4단계 엔드투엔드 파이프라인<br>• 종합 데이터 분석 인포그래픽<br>• 고해상도 시각화 차트 연동</p>
         </div>
       </div>
     </section>
 
-    <!-- 5. 주차별 로드맵 (상태 반영) -->
+    <!-- 5. 스마트물류 자동화 창고 3D 디지털 트윈 -->
+    <section>
+      <h2><span class="icon">🛰️</span> 스마트물류 자동화 창고 3D 디지털 트윈 시스템 (Digital Twin)</h2>
+      <div style="margin-bottom: 20px; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+        <img src="images/digital_twin_warehouse.png" alt="스마트물류 자동화 창고 디지털 트윈 종합 인포그래픽" style="width: 100%; height: auto; display: block;">
+      </div>
+      <div class="grid-4">
+        <div class="card" style="border-top: 4px solid var(--primary);">
+          <h4>🏢 3D 공간 랙-베이 셀 매핑</h4>
+          <p>3개 랙(Rack A/B/C) 36개 보관 셀의 3차원 좌표계(X-Y-Z) 구축 및 재고 상태별 3D 큐브 실시간 가시화</p>
+        </div>
+        <div class="card" style="border-top: 4px solid var(--danger);">
+          <h4>🤖 AGV 자율 무인운반차 관제</h4>
+          <p>설비 건전도 급락 시 <code>AGV-01</code>이 대상 부품을 사전 피킹하여 공정 라인으로 자율 공급 (다운타임 제로화)</p>
+        </div>
+        <div class="card" style="border-top: 4px solid var(--accent);">
+          <h4>🎯 골든존(Golden Zone) 최적화</h4>
+          <p>출고 피킹 작업의 55%가 집중되는 2단(높이 1.8~3.6m)을 골든존으로 지정하여 A/V급 핵심 부품 집중 보관</p>
+        </div>
+        <div class="card" style="border-top: 4px solid var(--success);">
+          <h4>🌡️ IoT 온습도 & 화재 텔레메트리</h4>
+          <p>항온항습(20.8°C / 41.5% RH), 화재 안전 지수 및 실시간 랙 공간 점유율(68.4%) 센서 데이터 연동</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 주차별 로드맵 (상태 반영) -->
     <section>
       <h2><span class="icon">📅</span> 5단계 프로젝트 진행 타임라인 로드맵</h2>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px;">
@@ -679,11 +710,11 @@
         </div>
         <div class="step-box" style="border-top-color: var(--success);">
           <div class="step-num" style="color: var(--success);">WEEK 4 (완료)</div>
-          <h4>웹 대시보드 프로토타입</h4>
+          <h4>웹 대시보드 & 디지털 트윈</h4>
           <ul style="color: #334155;">
-            <li>✓ Streamlit 5-Tab UI</li>
+            <li>✓ Streamlit 6-Tab UI</li>
+            <li>✓ 3D 물류 디지털 트윈 & AGV</li>
             <li>✓ 1-클릭 발주 시뮬레이션</li>
-            <li>✓ app.py 구현 및 실행 확인</li>
           </ul>
         </div>
         <div class="step-box" style="border-top-color: var(--success);">
@@ -691,7 +722,7 @@
           <h4>성과 분석 및 최종 발표</h4>
           <ul style="color: #334155;">
             <li>✓ 재고비용 절감 ROI 산출</li>
-            <li>✓ 12슬라이드 덱 완성</li>
+            <li>✓ 14슬라이드 덱 완성</li>
             <li>✓ 리포지토리 최종 정리</li>
           </ul>
         </div>
