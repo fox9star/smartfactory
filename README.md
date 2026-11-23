@@ -25,6 +25,13 @@ py -3.9 -m streamlit run app.py
 
 ---
 
+## 🌐 호스팅 및 온라인 웹 뷰어 (GitHub & GitHub Pages)
+- 🐙 **GitHub 리포지토리**: [https://github.com/fox9star/smartfactory](https://github.com/fox9star/smartfactory)
+- 🌐 **온라인 웹 가이드 (GitHub Pages)**: [https://fox9star.github.io/smartfactory/](https://fox9star.github.io/smartfactory/)
+- 📽️ **온라인 프레젠테이션 슬라이드**: [https://fox9star.github.io/smartfactory/smart_factory_slides.html](https://fox9star.github.io/smartfactory/smart_factory_slides.html)
+
+---
+
 ## 📌 3대 프로젝트 가이드 및 발표 문서 (자동 동기화 유지)
 - 📽️ **프레젠테이션 슬라이드 (HTML)**: [smart_factory_slides.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_slides.html) *(방향키, F 전체화면, T 테마전환 지원)*
 - 🌐 **웹 브라우저 가이드 (HTML)**: [smart_factory_project_guide.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_project_guide.html) (또는 [index.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/index.html))

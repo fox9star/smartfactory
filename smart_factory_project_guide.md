@@ -180,8 +180,11 @@ flowchart TD
 
 ---
 
-## 8. 관련 문서 바로가기
+## 8. 관련 문서 및 호스팅 바로가기
 
-- 🌐 **웹 가이드 뷰어**: [smart_factory_project_guide.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_project_guide.html)
-- 📽️ **프레젠테이션 슬라이드**: [smart_factory_slides.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_slides.html)
+- 🐙 **GitHub 리포지토리**: [https://github.com/fox9star/smartfactory](https://github.com/fox9star/smartfactory)
+- 🌐 **GitHub Pages 온라인 가이드**: [https://fox9star.github.io/smartfactory/](https://fox9star.github.io/smartfactory/)
+- 📽️ **GitHub Pages 온라인 슬라이드**: [https://fox9star.github.io/smartfactory/smart_factory_slides.html](https://fox9star.github.io/smartfactory/smart_factory_slides.html)
+- 🌐 **로컬 웹 가이드 뷰어**: [smart_factory_project_guide.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_project_guide.html)
+- 📽️ **로컬 프레젠테이션 슬라이드**: [smart_factory_slides.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_slides.html)
 - 📋 **리포지토리 개요**: [README.md](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/README.md)
