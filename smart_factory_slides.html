@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[코디세이] 스마트팩토리 스페어파트 지능형 재고관리 프레젠테이션</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+  <style>
+    /* 3-Mode Theme Support */
+    :root, [data-theme="dark"] {
+      --bg-color: #0b0f19;
+      --deck-bg: #111827;
+      --slide-bg: linear-gradient(145deg, #131b2e 0%, #0d1322 100%);
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-hover-bg: rgba(30, 41, 67, 0.85);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --accent: #06b6d4;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-white: #f8fafc;
+      --text-dim: #94a3b8;
+      --text-muted: #64748b;
+      --math-bg: rgba(15, 23, 42, 0.85);
+      --controls-bg: rgba(17, 24, 39, 0.85);
+      --border-header: rgba(255, 255, 255, 0.08);
+      --title-color: #ffffff;
+    }
+
+    [data-theme="gray"] {
+      --bg-color: #334155;
+      --deck-bg: #1e293b;
+      --slide-bg: linear-gradient(145deg, #273549 0%, #1e293b 100%);
+      --card-bg: rgba(30, 41, 59, 0.85);
+      --card-hover-bg: rgba(51, 65, 85, 0.95);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --primary: #38bdf8;
+      --primary-light: #7dd3fc;
+      --accent: #22d3ee;
+      --success: #34d399;
+      --warning: #fbbf24;
+      --danger: #f87171;
+      --text-white: #f8fafc;
+      --text-dim: #cbd5e1;
+      --text-muted: #94a3b8;
+      --math-bg: rgba(15, 23, 42, 0.9);
+      --controls-bg: rgba(30, 41, 59, 0.9);
+      --border-header: rgba(255, 255, 255, 0.12);
+      --title-color: #ffffff;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #e2e8f0;
+      --deck-bg: #ffffff;
+      --slide-bg: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
+      --card-bg: #ffffff;
+      --card-hover-bg: #f8fafc;
+      --card-border: rgba(0, 0, 0, 0.12);
+      --primary: #2563eb;
+      --primary-light: #1d4ed8;
+      --accent: #0284c7;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --text-white: #0f172a;
+      --text-dim: #475569;
+      --text-muted: #64748b;
+      --math-bg: #f1f5f9;
+      --controls-bg: rgba(255, 255, 255, 0.95);
+      --border-header: rgba(0, 0, 0, 0.08);
+      --title-color: #0f172a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-white);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Ambient Background Glow */
+    .ambient-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(6, 182, 212, 0.06) 50%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Deck Frame */
+    #deck {
+      width: min(92vw, calc(92vh * (16 / 9)));
+      height: min(calc(92vw * (9 / 16)), 92vh);
+      position: relative;
+      background: var(--deck-bg);
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7);
+      overflow: hidden;
+      z-index: 10;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Slide Elements */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      padding: 45px 60px;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
+      transform: scale(0.97) translateY(10px);
+      background: var(--slide-bg);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Slide Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border-header);
+      padding-bottom: 14px;
+    }
+
+    .slide-header .tag {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .slide-header .tag::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .slide-title {
+      font-size: 1.95rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--title-color);
+      line-height: 1.25;
+      transition: color 0.3s ease;
+    }
+
+    .slide-subtitle {
+      font-size: 0.98rem;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    /* Slide Body Layouts */
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(30, 41, 67, 0.85);
+      transform: translateY(-2px);
+    }
+
+    .card h3 {
+      font-size: 1.18rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card p {
+      font-size: 0.92rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+
+    .card ul {
+      list-style: none;
+      font-size: 0.86rem;
+    }
+
+    .card ul li {
+      margin-bottom: 6px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .card ul li strong {
+      color: var(--primary-light);
+      min-width: 68px;
+    }
+
+    /* Formula Box */
+    .math-card {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 10px 0;
+      font-size: 0.92rem;
+    }
+
+    /* Badges */
+    .pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--primary-light);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .pill-red { background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
+    .pill-green { background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.3); }
+    .pill-yellow { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3); }
+
+    /* Cover Slide Styling */
+    .cover-slide {
+      text-align: center;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cover-badge {
+      padding: 8px 18px;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      border-radius: 30px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .cover-title {
+      font-size: 3.1rem;
+      font-weight: 900;
+      line-height: 1.18;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #ffffff 30%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 18px;
+    }
+
+    .cover-desc {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      max-width: 800px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+    }
+
+    .cover-meta {
+      display: flex;
+      gap: 24px;
+      font-size: 0.92rem;
+      color: var(--text-muted);
+    }
+
+    /* Timeline */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      height: 100%;
+    }
+
+    .timeline-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px 14px;
+      display: flex;
+      flex-direction: column;
+      border-top: 4px solid var(--primary);
+    }
+
+    .timeline-num {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .timeline-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .timeline-list {
+      list-style: none;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+
+    .timeline-list li {
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .timeline-list li::before {
+      content: "•";
+      color: var(--primary);
+    }
+
+    /* Bottom Control Bar */
+    #controls {
+      position: absolute;
+      bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      background: var(--controls-bg);
+      backdrop-filter: blur(8px);
+      padding: 10px 24px;
+      border-radius: 40px;
+      border: 1px solid var(--border-header);
+      z-index: 50;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .ctrl-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .slide-counter {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      min-width: 65px;
+      text-align: center;
+    }
+
+    #progress-container {
+      width: 140px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 8.33%;
+      transition: width 0.3s ease;
+    }
+
+    .hint-text {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-left: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Main Slide Deck -->
+  <div id="deck">
+
+    <!-- Slide 1: Cover -->
+    <div class="slide cover-slide active" data-slide="1" style="background: linear-gradient(180deg, rgba(11,15,25,0.78) 0%, rgba(13,19,34,0.92) 100%), url('images/smart_factory_hero.png') center/cover no-repeat;">
+      <div class="cover-badge">Codyssey Confirmed Project Topic</div>
+      <h1 class="cover-title">스마트팩토리 설비 스페어파트<br>지능형 재고관리 및 발주 최적화</h1>
+      <p class="cover-desc">
+        설비 예지보전(PdM) 건전도 센서와 간헐적(Intermittent) 시계열 수요 예측을 융합하여,<br>
+        과잉 재고 비용을 획기적으로 줄이고 다운타임 결품을 원천 차단하는 AI 솔루션
+      </p>
+      <div class="cover-meta">
+        <span>📍 Innovation Academy Codyssey</span>
+        <span>👥 조별과제 확정 프로젝트</span>
+        <span>⚡ MRO Supply Chain AI</span>
+      </div>
+    </div>
+
+    <!-- Slide 2: Agenda & Overview -->
+    <div class="slide" data-slide="2">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">프로젝트 추진 아젠다 & 목차</h2>
+          <p class="slide-subtitle">설비 스페어파트 지능형 재고관리 시스템 기획 및 개발 개요</p>
+        </div>
+        <div class="tag">Agenda</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <h3>🎯 프로젝트 핵심 목표</h3>
+            <p>공장 유지보수(MRO)에서 가장 풀기 어려운 <strong>"결품 공포로 인한 과잉 재고"</strong> 문제를 AI와 데이터 모델링으로 해결</p>
+            <ul>
+              <li><strong>부품 등급화:</strong> 금액(ABC), 중요도(VED), 회전율(FSN) 결합 분류</li>
+              <li><strong>간헐적 시계열:</strong> 0이 대다수인 불규칙 수요를 맞춤형 손실함수로 정밀 예측</li>
+              <li><strong>동적 안전재고:</strong> 설비 IoT 고장 확률과 연동된 스마트 발주 알람</li>
+              <li><strong>실시간 대시보드:</strong> 현장 자재 관리자를 위한 4-Tab 웹 관제 시스템</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>📑 프레젠테이션 목차</h3>
+            <ul>
+              <li><strong>01.</strong> 제조 현장 4대 페인포인트 & 문제 정의</li>
+              <li><strong>02.</strong> 부품 다차원 분류 체계 (ABC-VED-FSN)</li>
+              <li><strong>03.</strong> 간헐적 시계열 예측 (Croston, SBA, Tweedie)</li>
+              <li><strong>04.</strong> 예지보전(PdM) 연계 동적 안전재고(SS) & ROP</li>
+              <li><strong>05.</strong> 데이터셋 설계 및 4대 테이블 스키마</li>
+              <li><strong>06.</strong> 시스템 아키텍처 & Streamlit 관제 대시보드</li>
+              <li><strong>07.</strong> 5단계 로드맵, 팀 역할 분담 및 킥오프 액션</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3: 4 Pain Points -->
+    <div class="slide" data-slide="3">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">제조 현장의 4대 핵심 페인포인트</h2>
+          <p class="slide-subtitle">왜 기존의 정적 ERP 재고관리로는 스페어파트를 최적화할 수 없는가?</p>
+        </div>
+        <div class="tag">Problem Definition</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="card">
+            <span class="pill pill-red" style="margin-bottom:10px;">Pain Point 1</span>
+            <h3>01. 결품 다운타임</h3>
+            <p>핵심 모터/감속기 결품 시 전체 라인 가동 중단 → <strong>시간당 수천만~수억 원</strong>의 가동 중단 손실 발생</p>
+          </div>
+          <div class="card">
+            <span class="pill pill-yellow" style="margin-bottom:10px;">Pain Point 2</span>
+            <h3>02. 과잉 재고 자본잠식</h3>
+            <p>결품 불안으로 과도한 재고 축적 → 막대한 보관비, 운전자본 묶임, <strong>부품 산화/노후화 폐기 손실</strong></p>
+          </div>
+          <div class="card">
+            <span class="pill" style="margin-bottom:10px;">Pain Point 3</span>
+            <h3>03. 간헐적 불규칙 수요</h3>
+            <p>평소 수요는 0이다가 고장 시 불규칙하게 튀는 <strong>Zero-inflated 패턴</strong>으로 기존 이동평균/ARIMA 무용지물</p>
+          </div>
+          <div class="card">
+            <span class="pill pill-green" style="margin-bottom:10px;">Pain Point 4</span>
+            <h3>04. 긴 조달 리드타임</h3>
+            <p>해외 조달 및 특수 부품은 발주 후 입고까지 <strong>수주~수개월</strong> 소요 → 설비 예지보전과의 연계 필수</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4: Multi-Criteria Classification -->
+    <div class="slide" data-slide="4">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">부품 다차원 분류 체계 (ABC-VED-FSN)</h2>
+          <p class="slide-subtitle">수천 종의 부품을 단일 기준으로 관리하지 않고 가치와 중요도로 다차원 세분화</p>
+        </div>
+        <div class="tag">Classification Engine</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="card">
+            <span class="pill" style="margin-bottom:10px;">금액/가치 기준</span>
+            <h3>ABC 분석</h3>
+            <p>연간 소모 금액 비중 분석</p>
+            <ul>
+              <li><strong>A (고가):</strong> 총 사용액 상위 70~80% (소수 핵심)</li>
+              <li><strong>B (중간):</strong> 총 사용액 15~20%</li>
+              <li><strong>C (저가):</strong> 총 사용액 5~10% (다수 범용품)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="pill pill-red" style="margin-bottom:10px;">설비 치명도 기준</span>
+            <h3>VED 분석</h3>
+            <p>결품 시 공장 라인에 미치는 영향</p>
+            <ul>
+              <li><strong>V (Vital):</strong> 품절 시 라인 즉시 정지 (치명적)</li>
+              <li><strong>E (Essential):</strong> 라인 성능 저하, 24시간 내 위험</li>
+              <li><strong>D (Desirable):</strong> 보조 부품, 가동에 즉각 영향 없음</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="pill pill-green" style="margin-bottom:10px;">사용 회전율 기준</span>
+            <h3>FSN 분석</h3>
+            <p>부품 출고 빈도 주기 분석</p>
+            <ul>
+              <li><strong>F (Fast):</strong> 정기 소모 부품 (빠른 회전)</li>
+              <li><strong>S (Slow):</strong> 간헐적 사용 부품 (주의 관리)</li>
+              <li><strong>N (Non-moving):</strong> 장기 체류 부품 (폐기/매각 대상)</li>
+            </ul>
+          </div>
+        </div>
+        <div style="margin-top:14px; background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 12px 20px; font-size: 0.92rem; color: #cbd5e1;">
+          💡 <strong>우선순위 전략 타겟:</strong> <code>Vital + A등급</code> 부품은 설비 예지보전(PdM) 모델과 1:1로 직접 연계하여 동적 안전재고를 실시간 제어합니다.
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5: Intermittent Demand Forecasting -->
+    <div class="slide" data-slide="5">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">간헐적 시계열 수요 예측 (Croston, SBA, Tweedie)</h2>
+          <p class="slide-subtitle">0이 대부분인 희소 데이터(Zero-inflated)를 정밀 예측하기 위한 전용 알고리즘</p>
+        </div>
+        <div class="tag">Time-Series AI</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <h3>📈 통계적 베이스라인: Croston's & SBA</h3>
+            <p>수요가 발생한 시점의 <strong>수요 크기($z_t$)</strong>와 <strong>발생 간격($p_t$)</strong>을 분리하여 지수평활법으로 각각 추정</p>
+            <div class="math-card">
+              수요 간격: $p_t = \alpha \cdot q + (1-\alpha) p_{t-1}$<br>
+              수요 크기: $z_t = \alpha \cdot y_t + (1-\alpha) z_{t-1}$<br>
+              SBA 예측치: $\hat{Y}_{t+1} = \left(1 - \frac{\alpha}{2}\right) \frac{z_t}{p_t}$
+            </div>
+            <p style="font-size:0.85rem; color:#94a3b8;">* Croston 모델의 상향 편향을 SBA(Syntetos-Boylan) 상수로 완벽 보정</p>
+          </div>
+          <div class="card">
+            <h3>🌲 머신러닝: LightGBM with Tweedie Loss</h3>
+            <p>0과 양수 연속값을 동시에 모델링하는 <strong>복합 포아송-감마(Tweedie, $1 < p < 2$) 손실함수</strong> 적용</p>
+            <div class="math-card">
+              $\mathcal{L}(y, \hat{y}) = - \frac{y \cdot \hat{y}^{1-p}}{1-p} + \frac{\hat{y}^{2-p}}{2-p}$
+            </div>
+            <ul>
+              <li><strong>특장점 1:</strong> 설비 가동 시간, 누적 진동량, 부품 장착 기간 피처 결합</li>
+              <li><strong>특장점 2:</strong> 계절성 및 정기 점검 캘린더 변수 손쉬운 통합</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6: Visual Analytics Dashboard -->
+    <div class="slide" data-slide="6">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">종합 데이터 분석 및 시계열 인포그래픽</h2>
+          <p class="slide-subtitle">ABC-VED 히트맵, 간헐적 출고 시계열, 설비 헬스 연동 곡선 및 경제성 분석</p>
+        </div>
+        <div class="tag">Analytics Visual</div>
+      </div>
+      <div class="slide-content" style="align-items: center; justify-content: center;">
+        <div style="border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); background: #ffffff; padding: 6px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); max-width: 940px;">
+          <img src="images/spare_parts_analytics_dashboard.png" alt="스마트팩토리 설비 스페어파트 종합 분석 인포그래픽" style="width: 100%; max-height: 470px; object-fit: contain; display: block;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 7: PdM Integration & Dynamic ROP -->
+    <div class="slide" data-slide="7">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">예지보전(PdM) 연계 동적 안전재고 & 재주문점(ROP)</h2>
+          <p class="slide-subtitle">설비 IoT 센서 고장 위험도에 따라 재주문점을 능동적으로 상향하는 스마트 발주 로직</p>
+        </div>
+        <div class="tag">Inventory Optimization</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <h3>⚙️ 동적 안전재고(Dynamic SS) 공식</h3>
+            <p>기존 정적 안전재고에 설비 센서 고장 확률 $P_{\text{failure}}$을 곱하여 위험 발생 시 선제적 버퍼 확보</p>
+            <div class="math-card" style="border-color: rgba(16, 185, 129, 0.4);">
+              $$SS = z \cdot \sqrt{L \cdot \sigma_d^2 + d^2 \cdot \sigma_L^2} \cdot \Big(1 + \gamma \cdot P_{\text{failure}}\Big)$$
+            </div>
+            <ul>
+              <li><strong>$z$:</strong> 서비스 수준 계수 (Vital 부품은 99.5%, Desirable은 90%)</li>
+              <li><strong>$L, \sigma_L$:</strong> 조달 리드타임 및 납기 변동성 표준편차</li>
+              <li><strong>$P_{\text{failure}}$:</strong> 설비 잔존수명(RUL) 감소 시 0에서 1로 상승</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>🚨 스마트 자동 발주 트리거 ($ROP$)</h3>
+            <p>현재고가 동적 재주문점 이하로 떨어지는 순간 관리자에게 조달 리드타임 역산 발주 경보 발행</p>
+            <div class="math-card" style="border-color: rgba(239, 68, 68, 0.4);">
+              $$ROP = (d \cdot L) + SS$$
+              $$\text{발주 조건: } \text{현재고} + \text{발주잔량} - \text{예약출고} \le ROP$$
+            </div>
+            <ul>
+              <li><strong>효과 1:</strong> 고장 징후 발생 시 입고 리드타임을 사전에 벌어 결품 원천 방지</li>
+              <li><strong>효과 2:</strong> 설비가 건강할 때는 안전재고를 낮춰 재고 유지비 절감</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 8: Dataset Schema -->
+    <div class="slide" data-slide="8">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">데이터셋 설계 및 4대 핵심 테이블 스키마</h2>
+          <p class="slide-subtitle">현장 재고 및 설비 데이터를 완벽히 모사하는 관계형 데이터 모델</p>
+        </div>
+        <div class="tag">Data Architecture</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="card">
+            <span class="pill" style="margin-bottom:8px;">Table 1 (20건)</span>
+            <h3>Part_Master</h3>
+            <ul>
+              <li><code>part_id</code>: SP-101~504</li>
+              <li><code>unit_cost</code>, <code>lead_time</code></li>
+              <li><code>abc_grade</code>: A/B/C</li>
+              <li><code>ved_grade</code>: V/E/D</li>
+              <li><code>target_service_level</code></li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="pill" style="margin-bottom:8px;">Table 2 (687건)</span>
+            <h3>Part_Transactions</h3>
+            <ul>
+              <li><code>trans_id</code>: TR-1001~1687</li>
+              <li><code>trans_date</code> (365일치)</li>
+              <li><code>qty_issued</code> (간헐적 수요)</li>
+              <li><code>reason</code>: 정기/돌발고장</li>
+              <li><code>total_cost</code></li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="pill" style="margin-bottom:8px;">Table 3 (8대)</span>
+            <h3>Equipment_Master</h3>
+            <ul>
+              <li><code>equip_id</code>: EQ-101~108</li>
+              <li><code>equip_name</code>, <code>line_name</code></li>
+              <li><code>health_score</code> (0~100)</li>
+              <li><code>failure_prob</code> (고장률)</li>
+              <li><code>status</code>: Normal/Warn/Crit</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="pill" style="margin-bottom:8px;">Table 4 (102건)</span>
+            <h3>Purchase_Orders</h3>
+            <ul>
+              <li><code>po_id</code>: PO-5001~5102</li>
+              <li><code>order_date</code>, <code>actual_date</code></li>
+              <li><code>order_qty</code>, <code>unit_cost</code></li>
+              <li><code>status</code>: Delivered / In-Transit</li>
+              <li><code>total_amount</code></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 9: System Architecture & Web UI -->
+    <div class="slide" data-slide="9">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">시스템 아키텍처 & 5-Tab 관제 대시보드</h2>
+          <p class="slide-subtitle">FastAPI 추론 엔진과 Streamlit 웹 인터랙티브 대시보드 구성</p>
+        </div>
+        <div class="tag">Web Dashboard</div>
+      </div>
+      <div class="slide-content">
+        <div style="margin-bottom: 12px; border-radius: 8px; overflow: hidden; border: 1px solid var(--card-border); background: #1e293b; padding: 4px;">
+          <img src="images/architecture_diagram.png" alt="시스템 아키텍처" style="width: 100%; max-height: 140px; object-fit: contain; display: block; margin: 0 auto;">
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;">
+          <div class="card" style="border-top: 4px solid var(--primary);">
+            <span class="pill" style="margin-bottom:8px;">TAB 1</span>
+            <h3>실시간 재고 & ABC-VED</h3>
+            <p>• 현재고 vs 안전재고 게이지<br>• ABC-VED 매트릭스 히트맵<br>• 결품 위험 부품 적색 표시</p>
+          </div>
+          <div class="card" style="border-top: 4px solid var(--accent);">
+            <span class="pill" style="margin-bottom:8px;">TAB 2</span>
+            <h3>간헐적 수요 예측 뷰</h3>
+            <p>• 실제 출고 vs SBA vs Tweedie<br>• 향후 12주 수요 예측 차트<br>• 모델별 정밀도(WAPE) 비교</p>
+          </div>
+          <div class="card" style="border-top: 4px solid var(--danger);">
+            <span class="pill pill-red" style="margin-bottom:8px;">TAB 3</span>
+            <h3>예지보전 발주 추천</h3>
+            <p>• 설비 헬스 스코어 실시간 연동<br>• 동적 ROP 도달 시 1-클릭 발주<br>• 납기 리드타임 타임라인</p>
+          </div>
+          <div class="card" style="border-top: 4px solid var(--success);">
+            <span class="pill pill-green" style="margin-bottom:8px;">TAB 4</span>
+            <h3>비용 절감 & ROI</h3>
+            <p>• 재고 유지비 절감 시뮬레이터<br>• 라인 다운타임 회피 경제가치<br>• 투자대비 수익률(ROI) 보고서</p>
+          </div>
+          <div class="card" style="border-top: 4px solid #a855f7;">
+            <span class="pill" style="background:#a855f7; margin-bottom:8px;">TAB 5</span>
+            <h3>아키텍처 & 비주얼</h3>
+            <p>• 4단계 엔드투엔드 파이프라인<br>• ABC-VED & 예측 종합 차트<br>• 데이터 시각화 인포그래픽</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 10: Business ROI -->
+    <div class="slide" data-slide="10">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">비즈니스 기대효과 & 정량적 ROI</h2>
+          <p class="slide-subtitle">스마트 스페어파트 재고관리 도입으로 달성 가능한 정량적 성과</p>
+        </div>
+        <div class="tag">Business Impact</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-3">
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 2.8rem; font-weight: 900; color: #60a5fa; margin-bottom: 6px;">25~35%</div>
+            <h3>재고 보관 비용 절감</h3>
+            <p>비중요(Desirable, Slow) 부품의 과도한 안전재고를 줄여 창고 유지비 및 자본 묶임 비용 획기적 축소</p>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 2.8rem; font-weight: 900; color: #34d399; margin-bottom: 6px;">99.2%</div>
+            <h3>핵심 부품 가용성(Service Level)</h3>
+            <p>설비 센서 고장 위험도와 연계된 동적 발주로 Vital 핵심 부품의 결품률을 0%에 가깝게 유지</p>
+          </div>
+          <div class="card" style="text-align: center;">
+            <div style="font-size: 2.8rem; font-weight: 900; color: #f87171; margin-bottom: 6px;">수억 원+</div>
+            <h3>다운타임 손실 회피</h3>
+            <p>부품 결품으로 인한 생산 라인 가동 중단을 사전에 차단하여 연간 막대한 생산 차질 손실 예방</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11: 5-Step Roadmap -->
+    <div class="slide" data-slide="11">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">5단계 프로젝트 타임라인 및 구현 달성 현황</h2>
+          <p class="slide-subtitle">기획, 데이터 생성, 예측 모델링, 재고 최적화, 대시보드 전 단계 구현 완료</p>
+        </div>
+        <div class="tag">Timeline: Complete</div>
+      </div>
+      <div class="slide-content">
+        <div class="timeline">
+          <div class="timeline-item" style="border-top-color: var(--success);">
+            <div class="timeline-num" style="color: var(--success);">WEEK 01 (완료)</div>
+            <div class="timeline-title">데이터셋 설계 & 생성</div>
+            <ul class="timeline-list">
+              <li>✓ 4대 테이블 스키마</li>
+              <li>✓ <code>generate_dataset.py</code></li>
+              <li>✓ SQLite DB 구축 완료</li>
+            </ul>
+          </div>
+          <div class="timeline-item" style="border-top-color: var(--success);">
+            <div class="timeline-num" style="color: var(--success);">WEEK 02 (완료)</div>
+            <div class="timeline-title">간헐적 수요 예측</div>
+            <ul class="timeline-list">
+              <li>✓ Croston's 알고리즘</li>
+              <li>✓ SBA 오차 보정 모델</li>
+              <li>✓ WAPE 15%p 정밀도 개선</li>
+            </ul>
+          </div>
+          <div class="timeline-item" style="border-top-color: var(--success);">
+            <div class="timeline-num" style="color: var(--success);">WEEK 03 (완료)</div>
+            <div class="timeline-title">동적 ROP 최적화</div>
+            <ul class="timeline-list">
+              <li>✓ 동적 안전재고(SS) 수식</li>
+              <li>✓ 설비 고장확률 연동 로직</li>
+              <li>✓ <code>forecast_engine.py</code></li>
+            </ul>
+          </div>
+          <div class="timeline-item" style="border-top-color: var(--success);">
+            <div class="timeline-num" style="color: var(--success);">WEEK 04 (완료)</div>
+            <div class="timeline-title">웹 관제 대시보드</div>
+            <ul class="timeline-list">
+              <li>✓ Streamlit 4-Tab 구현</li>
+              <li>✓ 1-클릭 발주 시뮬레이션</li>
+              <li>✓ <code>app.py</code> 실행 검증</li>
+            </ul>
+          </div>
+          <div class="timeline-item" style="border-top-color: var(--success);">
+            <div class="timeline-num" style="color: var(--success);">WEEK 05 (완료)</div>
+            <div class="timeline-title">최종 발표 & 시연</div>
+            <ul class="timeline-list">
+              <li>✓ 정량적 ROI 시뮬레이터</li>
+              <li>✓ 13장 슬라이드 덱 완성</li>
+              <li>✓ 3대 문서 동기화 유지</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 12: Team Roles -->
+    <div class="slide" data-slide="12">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">4인 팀 역할 분담 및 실제 기여 내용</h2>
+          <p class="slide-subtitle">데이터 엔지니어링, AI 모델링, 백엔드 최적화, 프론트엔드 관제 대시보드 분업</p>
+        </div>
+        <div class="tag">Team & Roles</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-4">
+          <div class="card" style="border-top: 4px solid var(--primary);">
+            <span class="pill" style="margin-bottom:8px;">PM & Data</span>
+            <h3>팀원 A (기획 / 데이터)</h3>
+            <ul>
+              <li>프로젝트 일정 및 요구사항 명세</li>
+              <li>합성 데이터 생성기 (<code>generate_dataset.py</code>)</li>
+              <li>ABC-VED 분류 매트릭스 구현</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top: 4px solid var(--accent);">
+            <span class="pill" style="margin-bottom:8px;">AI Specialist</span>
+            <h3>팀원 B (AI 모델링)</h3>
+            <ul>
+              <li>Croston, SBA 시계열 알고리즘</li>
+              <li>수요 예측 정밀도(WAPE, RMSE) 평가</li>
+              <li>간헐적 시계열 성능 고도화</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top: 4px solid var(--success);">
+            <span class="pill pill-green" style="margin-bottom:8px;">Backend & MLOps</span>
+            <h3>팀원 C (엔진 / 서빙)</h3>
+            <ul>
+              <li>동적 ROP/안전재고 최적화 엔진</li>
+              <li>설비 헬스 스코어 연동 파이프라인</li>
+              <li>SQLite DB 및 트랜잭션 연계</li>
+            </ul>
+          </div>
+          <div class="card" style="border-top: 4px solid var(--warning);">
+            <span class="pill pill-yellow" style="margin-bottom:8px;">Frontend & Present</span>
+            <h3>팀원 D (UI / 발표)</h3>
+            <ul>
+              <li>Streamlit 4-Tab 웹 대시보드 (<code>app.py</code>)</li>
+              <li>발주 알람 및 ROI 시뮬레이터 UI</li>
+              <li>최종 발표 총괄 및 시연 리딩</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 13: Run Guide & Wrap up -->
+    <div class="slide" data-slide="13">
+      <div class="slide-header">
+        <div>
+          <h2 class="slide-title">시스템 실행 가이드 & 프로젝트 결론</h2>
+          <p class="slide-subtitle">실제 환경에서 대시보드를 즉시 시연하고 검증하기 위한 런타임 가이드</p>
+        </div>
+        <div class="tag">Execution Guide</div>
+      </div>
+      <div class="slide-content">
+        <div class="grid-2">
+          <div class="card">
+            <h3>⚡ 시스템 즉시 실행 명령어</h3>
+            <ul style="font-family: Consolas, monospace; font-size: 0.88rem; line-height: 1.8;">
+              <li><strong>[1] 데이터 생성:</strong><br><code style="color:#60a5fa;">py -3.9 generate_dataset.py</code></li>
+              <li><strong>[2] 분석 엔진 검증:</strong><br><code style="color:#60a5fa;">py -3.9 forecast_engine.py</code></li>
+              <li><strong>[3] 웹 대시보드 구동:</strong><br><code style="color:#34d399;">py -3.9 -m streamlit run app.py</code></li>
+            </ul>
+            <p style="font-size:0.82rem; color:#94a3b8; margin-top:8px;">* 브라우저에서 <code>http://localhost:8501</code> 자동 오픈</p>
+          </div>
+          <div class="card" style="justify-content: center; text-align: center; background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(6,182,212,0.1));">
+            <h3 style="justify-content: center; font-size: 1.55rem; margin-bottom: 14px;">스마트 스페어파트 시스템 완성!</h3>
+            <p style="font-size: 1.02rem; color: #cbd5e1; margin-bottom: 20px;">
+              데이터 수집부터 AI 모델링, 동적 최적화, 웹 관제 대시보드까지<br>
+              엔드투엔드 프로토타입 구현 및 발표 준비가 완료되었습니다.
+            </p>
+            <div>
+              <span class="pill" style="font-size: 0.88rem; padding: 6px 16px;">Codyssey Smart Factory Team</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation & Controls -->
+  <div id="controls">
+    <button class="ctrl-btn" id="prev-btn" title="이전 슬라이드 (←)">❮</button>
+    <div class="slide-counter">
+      <span id="current-slide">1</span> / <span id="total-slides">13</span>
+    </div>
+    <div id="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+    <button class="ctrl-btn" id="next-btn" title="다음 슬라이드 (→)">❯</button>
+    <button class="ctrl-btn" id="fullscreen-btn" title="전체화면 (F)">⛶</button>
+    <button class="ctrl-btn" id="theme-btn" onclick="cycleSlideTheme()" title="테마 전환: 다크/그레이/라이트 (T)">🌙</button>
+    <span class="hint-text">방향키(←, →), F(전체화면), T(테마전환)</span>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+
+    const currentSlideEl = document.getElementById('current-slide');
+    const totalSlidesEl = document.getElementById('total-slides');
+    const progressBar = document.getElementById('progress-bar');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const themeBtn = document.getElementById('theme-btn');
+
+    // 3-Mode Theme Handling (Dark -> Gray -> Light -> Dark ...)
+    const slideThemes = [
+      { id: 'dark', icon: '🌙', name: '다크 테마' },
+      { id: 'gray', icon: '🏢', name: '그레이 테마' },
+      { id: 'light', icon: '☀️', name: '라이트 테마' }
+    ];
+    let currentThemeIndex = 0;
+
+    function applySlideTheme(themeObj) {
+      document.documentElement.setAttribute('data-theme', themeObj.id);
+      if (themeBtn) {
+        themeBtn.textContent = themeObj.icon;
+        themeBtn.setAttribute('title', `현재: ${themeObj.name} (클릭 또는 T로 전환)`);
+      }
+      localStorage.setItem('codyssey_slide_theme', themeObj.id);
+    }
+
+    function cycleSlideTheme() {
+      currentThemeIndex = (currentThemeIndex + 1) % slideThemes.length;
+      applySlideTheme(slideThemes[currentThemeIndex]);
+    }
+
+    // 초기 테마 적용
+    (function initSlideTheme() {
+      const saved = localStorage.getItem('codyssey_slide_theme');
+      const idx = slideThemes.findIndex(t => t.id === saved);
+      if (idx !== -1) currentThemeIndex = idx;
+      applySlideTheme(slideThemes[currentThemeIndex]);
+    })();
+
+    totalSlidesEl.textContent = totalSlides;
+
+    function updateSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= totalSlides) index = totalSlides - 1;
+      currentIndex = index;
+
+      slides.forEach((slide, i) => {
+        if (i === currentIndex) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+
+      currentSlideEl.textContent = currentIndex + 1;
+      const progressPercent = ((currentIndex + 1) / totalSlides) * 100;
+      progressBar.style.width = progressPercent + '%';
+
+      prevBtn.style.opacity = currentIndex === 0 ? '0.4' : '1';
+      nextBtn.style.opacity = currentIndex === totalSlides - 1 ? '0.4' : '1';
+    }
+
+    function nextSlide() {
+      if (currentIndex < totalSlides - 1) updateSlide(currentIndex + 1);
+    }
+
+    function prevSlide() {
+      if (currentIndex > 0) updateSlide(currentIndex - 1);
+    }
+
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key === 'f' || e.key === 'F') {
+        toggleFullScreen();
+      } else if (e.key === 't' || e.key === 'T') {
+        cycleSlideTheme();
+      } else if (e.key === 'Home') {
+        updateSlide(0);
+      } else if (e.key === 'End') {
+        updateSlide(totalSlides - 1);
+      }
+    });
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(err);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    fullscreenBtn.addEventListener('click', toggleFullScreen);
+
+    updateSlide(0);
+  </script>
+</body>
+</html>

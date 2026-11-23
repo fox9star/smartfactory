@@ -1,0 +1,9 @@
+﻿equip_id,equip_name,line_name,criticality,install_date,health_score,failure_prob,status
+EQ-101,CNC 정밀선반 1호기,가공 1라인,Critical,2021-03-15,88.5,0.08,Normal
+EQ-102,다이캐스팅 주조기 2호기,주조 라인,Critical,2020-08-10,64.2,0.62,Warning
+EQ-103,500톤 유압 프레스 1호기,프레스 라인,Critical,2019-11-20,52.0,0.85,Critical
+EQ-104,도장 다관절 로봇 1호기,도장 라인,Major,2022-01-18,91.0,0.04,Normal
+EQ-105,SMT 고속 칩 마운터,전자조립 라인,Critical,2023-05-12,94.3,0.03,Normal
+EQ-106,진공 열처리로 1호기,열처리 라인,Major,2021-09-05,71.8,0.38,Warning
+EQ-107,자동 나사 체결 로봇,최종조립 라인,Standard,2022-07-22,89.0,0.07,Normal
+EQ-108,사출성형기 1호기,성형 라인,Critical,2020-04-30,58.7,0.74,Critical

@@ -1,0 +1,21 @@
+﻿part_id,part_name,category,unit_cost_krw,lead_time_days,lead_time_std,current_stock,abc_grade,ved_grade,target_service_level
+SP-101,고속 스핀들 베어링,Motor & Drive,450000,14,2.5,3,A,V,0.99
+SP-102,AC 서보 모터 750W,Motor & Drive,850000,21,4.0,1,A,V,0.99
+SP-103,산업용 인버터 드라이브,Motor & Drive,620000,18,3.0,2,A,V,0.99
+SP-104,정밀 플렉시블 커플링,Motor & Drive,120000,7,1.5,5,B,E,0.95
+SP-201,비례 공압 제어 밸브,Pneumatic/Hydraulic,380000,12,2.0,2,A,V,0.98
+SP-202,솔레노이드 밸브 5포트,Pneumatic/Hydraulic,75000,5,1.0,8,B,E,0.95
+SP-203,유압 실린더 패킹 키트,Pneumatic/Hydraulic,95000,6,1.0,6,B,E,0.95
+SP-204,에어 필터 레귤레이터,Pneumatic/Hydraulic,42000,3,0.5,12,C,D,0.9
+SP-301,3축 가속도 진동 센서,Sensor & Control,310000,10,2.0,2,A,E,0.98
+SP-302,적외선 표면 온도 센서,Sensor & Control,180000,8,1.5,4,B,E,0.95
+SP-303,고정밀 레이저 변위 센서,Sensor & Control,550000,15,3.0,1,A,V,0.99
+SP-304,PLC 디지털 I/O 모듈,Sensor & Control,240000,10,2.0,3,B,V,0.98
+SP-401,정밀 볼 스크류 어셈블리,Transmission,780000,25,5.0,1,A,V,0.99
+SP-402,우레탄 타이밍 벨트 T10,Transmission,35000,4,1.0,15,C,E,0.92
+SP-403,더블 피치 롤러 체인,Transmission,48000,5,1.0,10,C,E,0.92
+SP-404,유성 감속기 기어 세트,Transmission,920000,30,6.0,1,A,V,0.99
+SP-501,고속 반도체 보호 퓨즈,Electrical,18000,2,0.5,25,C,D,0.9
+SP-502,모터 카본 브러쉬 세트,Electrical,28000,3,0.5,18,C,D,0.9
+SP-503,내열 실리콘 개스킷 패킹,Consumables,15000,3,0.5,30,C,D,0.9
+SP-504,고압 내유성 에어 호스 10m,Consumables,22000,2,0.5,20,C,D,0.9
