@@ -7,7 +7,7 @@
 - **핵심 목표**: 설비 IoT 건전도 센서 지표와 간헐적(Zero-inflated) 시계열 수요 예측을 융합하여, 과잉 재고 비용을 대폭 절감하고 치명적인 다운타임 결품을 사전에 방지
 - **주요 기술**: ABC-VED 다차원 부품 분류, Croston's Method / SBA, 동적 안전재고(Dynamic SS) 및 재주문점(Dynamic ROP), 스마트물류 3D 디지털 트윈(Digital Twin), Streamlit 6-Tab 웹 관제 대시보드
 - **UI/UX 특장점**: 버튼 하나로 **라이트(☀️) / 그레이(🏢) / 다크(🌙) 모드** 실시간 순환 전환 지원 (HTML 가이드, 슬라이드, 대시보드 전체 적용)
-- **비주얼 그래픽**: 자율 스마트팩토리 운영 조감도(`images/smart_factory_hero.png`), 스마트물류 3D 자동화 창고 디지털 트윈(`images/digital_twin_warehouse.png`), 4단계 파이프라인 아키텍처(`images/architecture_diagram.png`), 4분할 분석 인포그래픽(`images/spare_parts_analytics_dashboard.png`) 수록
+- **비주얼 그래픽**: 자율 스마트팩토리 운영 조감도(`images/smart_factory_hero.png`), 스마트물류 AS/RS 및 AMR 디지털 트윈 조감도(`images/smart_logistics_digital_twin.png`), 창고 랙/AGV 관제 인포그래픽(`images/digital_twin_warehouse.png`), 4단계 파이프라인 아키텍처(`images/architecture_diagram.png`), 4분할 분석 인포그래픽(`images/spare_parts_analytics_dashboard.png`) 수록
 
 ---
 

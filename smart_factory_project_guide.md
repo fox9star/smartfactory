@@ -149,9 +149,11 @@ flowchart TD
 
 ## 5. 스마트물류 자동화 창고 3D 디지털 트윈 (Digital Twin) 시스템
 
-![스마트물류 자동화 창고 디지털 트윈 종합 인포그래픽](images/digital_twin_warehouse.png)
+![스마트물류 자동화 창고 AS/RS 및 AMR 디지털 트윈 조감도](images/smart_logistics_digital_twin.png)
 
 스마트팩토리에서 설비 예지보전(PdM)에 의해 긴급 발주 및 소요가 예측된 부품이 공정 라인에 실제로 공급되기까지의 물리적 병목을 해소하기 위해, **자동화 물류 창고(AS/RS), 랙 셀(Rack Bins), AGV 무인 운반차를 1:1로 가상화한 실시간 3D 디지털 트윈 관제 시스템**(`digital_twin_engine.py`)을 구축했습니다.
+
+![스마트물류 자동화 창고 디지털 트윈 종합 인포그래픽](images/digital_twin_warehouse.png)
 
 ### 📌 디지털 트윈 핵심 구현 기능
 1. **3차원 랙 셀(Rack-Bay-Level) 공간 매핑 및 재고 가시화**:

@@ -227,6 +227,10 @@ with tab_dt:
     st.subheader("🛰️ 스마트물류 자동화 창고 3D 디지털 트윈 (Digital Twin HUD)")
     st.caption("3차원 창고 랙(Rack-Bay-Level) 좌표계 기반 실시간 재고 적재율 및 결품 위험 셀 3D 시각화, AGV 자율주행 관제")
     
+    dt_hero_path = os.path.join(os.path.dirname(__file__), "images", "smart_logistics_digital_twin.png")
+    if os.path.exists(dt_hero_path):
+        st.image(dt_hero_path, caption="Autonomous Smart Logistics AS/RS & AMR Digital Twin Operations", use_container_width=True)
+    
     df_bins = build_warehouse_digital_twin_data(df_results)
     df_agv = get_agv_fleet_status()
     telemetry = get_warehouse_telemetry()
