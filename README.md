@@ -32,6 +32,16 @@ py -3.9 -m streamlit run app.py
 
 ---
 
+## ☁️ 클라우드 동적 서버 배포 가이드 (Streamlit Cloud & Codespaces)
+- **1. Streamlit Community Cloud (무료 영구 배포, 권장)**:
+  - [share.streamlit.io](https://share.streamlit.io/) 접속 ➔ GitHub 연동 ➔ `fox9star/smartfactory` / `app.py` 선택 ➔ `Deploy` 클릭
+  - 1분 만에 `https://smartfactory-xxx.streamlit.app` 영구 공용 URL 발급
+- **2. GitHub Codespaces (GitHub 자체 클라우드 개발 서버)**:
+  - 저장소 상단 `Code` 버튼 ➔ `Codespaces` ➔ `Create codespace on main` 클릭
+  - 브라우저 VS Code 환경에서 자동 환경 구성 후 `streamlit run app.py` 실행 시 포트 포워딩 주소 즉시 생성
+
+---
+
 ## 📌 3대 프로젝트 가이드 및 발표 문서 (자동 동기화 유지)
 - 📽️ **프레젠테이션 슬라이드 (HTML)**: [smart_factory_slides.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_slides.html) *(방향키, F 전체화면, T 테마전환 지원)*
 - 🌐 **웹 브라우저 가이드 (HTML)**: [smart_factory_project_guide.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/smart_factory_project_guide.html) (또는 [index.html](file:///g:/내%20드라이브/aiworks/20261123_smartfactory/index.html))

@@ -124,6 +124,10 @@ flowchart TD
    ```
    *브라우저에서 `http://localhost:8501`로 즉시 접속 가능*
 
+4. **클라우드 서버 무료 호스팅 (Streamlit Cloud & GitHub Codespaces)**:
+   - **Streamlit Community Cloud (무료 영구 웹 호스팅, 추천)**: [share.streamlit.io](https://share.streamlit.io/)에서 GitHub 계정 로그인 ➔ `New app` ➔ 저장소 `fox9star/smartfactory`, 메인 파일 `app.py` 선택 ➔ 배포 즉시 누구나 접속 가능한 영구 URL 발급
+   - **GitHub Codespaces (GitHub 자체 클라우드 개발 서버)**: 리포지토리 상단의 `Code` ➔ `Codespaces` ➔ `Create codespace on main` 클릭 시 브라우저에서 자동 환경 구축 및 포트 포워딩 주소 제공
+
 ---
 
 ## 4. 실제 데이터셋 생성 결과 및 분석 성능
